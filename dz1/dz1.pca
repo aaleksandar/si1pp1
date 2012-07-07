@@ -1,0 +1,73 @@
+A = 100
+B = 200
+C = 300
+
+adrA = 1
+adrB = 2
+adrC = 3
+
+nA = 4
+nB = 5
+nC = 6
+
+org 8
+
+start:in nA
+bgt 0,nA,kraj
+in nB
+bgt 0,nB,kraj
+
+add nC,nA,nB
+
+mov adrA, #A
+mov adrB, #B
+mov adrC, #C
+
+beq nA,0,ignoreA
+in (adrA), nA
+beq nB,0,ignoreB
+ignoreA:beq nB,0,kraj
+in (adrB), nB
+
+ignoreB:jsr spoj
+
+mov adrC,#C
+out (adrC),nC
+
+beq nC,nC,start
+
+kraj: stop
+
+
+spoj:beq nA,0,finishB
+beq nB,0,finishA
+
+bgt (adrA),(adrB),writeB
+
+mov (adrC),(adrA)
+add adrA,adrA,1
+sub nA,nA,1
+beq nA,nA,skok
+
+writeB:mov (adrC),(adrB)
+add adrB,adrB,1
+sub nB,nB,1
+
+skok:add adrC,adrC,1
+
+beq nA,nA,spoj
+
+finishB:mov (adrC),(adrB)
+add adrB,adrB,1
+add adrC,adrC,1
+sub nB,nB,1
+bgt nB,0,finishB
+beq nB,nB,krajpp
+
+finishA:mov (adrC),(adrA)
+add adrA,adrA,1
+add adrC,adrC,1
+sub nA,nA,1
+bgt nA,0,finishA
+
+krajpp:rts
